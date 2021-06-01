@@ -23,7 +23,8 @@ func device() {
 				user_id varchar(36) DEFAULT NULL COMMENT '用户ID',
 				created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-				PRIMARY KEY (id)
+				PRIMARY KEY (id),
+				UNIQUE KEY code (code)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		`)
 	}

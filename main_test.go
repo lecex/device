@@ -80,16 +80,14 @@ func TestDevicesUpdate(t *testing.T) {
 }
 
 func TestDevicesGet(t *testing.T) {
-	// req := &devicePB.Request{
-	// 	Device: &devicePB.Device{
-	// 		// Id: 6,
-	// 		PluCode: `6923450662007`,
-	// 		Handle:  false,
-	// 	},
-	// }
-	// res := &devicePB.Response{}
-	// h := handler.Device{&service.DeviceRepository{db.DB}}
-	// err := h.Get(context.TODO(), req, res)
-	// fmt.Println("DeviceDeviceGet", res, err)
-	// t.Log(req, res, err)
+	req := &devicePB.Request{
+		Device: &devicePB.Device{
+			Code: `0001`,
+		},
+	}
+	res := &devicePB.Response{}
+	h := handler.Device{&service.DeviceRepository{db.DB}}
+	err := h.Get(context.TODO(), req, res)
+	fmt.Println("DeviceDeviceGet", res, err)
+	t.Log(req, res, err)
 }
