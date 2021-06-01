@@ -13,17 +13,19 @@ type Device struct {
 	Repo service.Device
 }
 
-// List
+// List 获取所有角色
 func (srv *Device) List(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
-	device, err := srv.Repo.List(req.Device)
+	devices, err := srv.Repo.List(req.ListQuery)
+	total, err := srv.Repo.Total(req.ListQuery)
 	if err != nil {
 		return err
 	}
-	res.Device = device
+	res.Devices = devices
+	res.Total = total
 	return err
 }
 
-// Get
+// Get 获取角色
 func (srv *Device) Get(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
 	device, err := srv.Repo.Get(req.Device)
 	if err != nil {
@@ -33,30 +35,35 @@ func (srv *Device) Get(ctx context.Context, req *pb.Request, res *pb.Response) (
 	return err
 }
 
-// Create 添加新的盘点信息
+// Create 创建角色
 func (srv *Device) Create(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
 	_, err = srv.Repo.Create(req.Device)
 	if err != nil {
 		res.Valid = false
-		return fmt.Errorf("添加盘点信息失败")
+		return fmt.Errorf("添加角色失败")
 	}
 	res.Valid = true
 	return err
 }
 
-// Update
+// Update 更新角色
 func (srv *Device) Update(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
-	device, valid, err := srv.Repo.Update(req.Device)
+	valid, err := srv.Repo.Update(req.Device)
 	if err != nil {
 		res.Valid = false
-		return fmt.Errorf("更新盘点信息失败")
+		return fmt.Errorf("更新角色失败")
 	}
-	res.Device = device
 	res.Valid = valid
 	return err
 }
 
-// Delete
+// Delete 删除角色
 func (srv *Device) Delete(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
+	valid, err := srv.Repo.Delete(req.Device)
+	if err != nil {
+		res.Valid = false
+		return fmt.Errorf("删除角色失败")
+	}
+	res.Valid = valid
 	return err
 }

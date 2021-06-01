@@ -12,10 +12,13 @@ import (
 
 //Device 仓库接口
 type Device interface {
-	Create(user *pb.Device) (*pb.Device, error)
-	Get(user *pb.Device) (*pb.Device, error)
-	Update(user *pb.Device) (*pb.Device, bool, error)
-	Delete(user *pb.Device) (bool, error)
+	Create(role *pb.Device) (*pb.Device, error)
+	Delete(role *pb.Device) (bool, error)
+	Update(role *pb.Device) (bool, error)
+	Get(role *pb.Device) (*pb.Device, error)
+	All(req *pb.Request) ([]*pb.Device, error)
+	List(req *pb.ListQuery) ([]*pb.Device, error)
+	Total(req *pb.ListQuery) (int64, error)
 }
 
 // DeviceRepository 用户仓库
