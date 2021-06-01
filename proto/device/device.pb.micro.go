@@ -34,13 +34,15 @@ var _ server.Option
 // Client API for Devices service
 
 type DevicesService interface {
-	// 获取单条盘点信息
+	// 获取设备列表
+	List(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
+	// 获取单条设备信息
 	Get(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
-	// 创建或更新商品盘点信息
+	// 创建或更新商品设备信息
 	Create(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	// 更新数据
 	Update(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
-	// 删除商品盘点信息
+	// 删除商品设备信息
 	Delete(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 }
 
@@ -54,6 +56,16 @@ func NewDevicesService(name string, c client.Client) DevicesService {
 		c:    c,
 		name: name,
 	}
+}
+
+func (c *devicesService) List(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.name, "Devices.List", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *devicesService) Get(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
@@ -99,18 +111,21 @@ func (c *devicesService) Delete(ctx context.Context, in *Request, opts ...client
 // Server API for Devices service
 
 type DevicesHandler interface {
-	// 获取单条盘点信息
+	// 获取设备列表
+	List(context.Context, *Request, *Response) error
+	// 获取单条设备信息
 	Get(context.Context, *Request, *Response) error
-	// 创建或更新商品盘点信息
+	// 创建或更新商品设备信息
 	Create(context.Context, *Request, *Response) error
 	// 更新数据
 	Update(context.Context, *Request, *Response) error
-	// 删除商品盘点信息
+	// 删除商品设备信息
 	Delete(context.Context, *Request, *Response) error
 }
 
 func RegisterDevicesHandler(s server.Server, hdlr DevicesHandler, opts ...server.HandlerOption) error {
 	type devices interface {
+		List(ctx context.Context, in *Request, out *Response) error
 		Get(ctx context.Context, in *Request, out *Response) error
 		Create(ctx context.Context, in *Request, out *Response) error
 		Update(ctx context.Context, in *Request, out *Response) error
@@ -125,6 +140,10 @@ func RegisterDevicesHandler(s server.Server, hdlr DevicesHandler, opts ...server
 
 type devicesHandler struct {
 	DevicesHandler
+}
+
+func (h *devicesHandler) List(ctx context.Context, in *Request, out *Response) error {
+	return h.DevicesHandler.List(ctx, in, out)
 }
 
 func (h *devicesHandler) Get(ctx context.Context, in *Request, out *Response) error {

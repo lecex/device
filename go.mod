@@ -1,4 +1,4 @@
-module github.com/lecex/inventory
+module github.com/lecex/device
 
 go 1.13
 

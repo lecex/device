@@ -3,39 +3,42 @@ syntax = "proto3";
 package device;
 
 service Devices {
-    // 获取单条盘点信息
+    // 获取设备列表
+    rpc List(Request) returns (Response) {}
+    // 获取单条设备信息
     rpc Get(Request) returns (Response) {}
-    // 创建或更新商品盘点信息
+    // 创建或更新商品设备信息
     rpc Create(Request) returns (Response) {}
     // 更新数据
     rpc Update(Request) returns (Response) {}
-    // 删除商品盘点信息
+    // 删除商品设备信息
     rpc Delete(Request) returns (Response) {}
     // 微服务之间调用
 }
 
-
-
-message Info {
-    int64 id = 1;                      // 编码
-    string input = 2;       // 输入内容 [26*2]
-    int64 number = 3;       // 数量  基本单位小数点后两位数
-    string position = 4;    // 位置备注
-    int64 item_id = 5;
+message Config {
+    string barcode_reg = 1;             // 条形码识别规则
+    // 支付相关
+    string order_title = 2;             // 订单标题
+    string scan_store_name = 3;         // 扫码商家名称
+    string scan_pay_Id = 4;             // 扫码支付方式ID
+    string card_pay_Id = 5;             // 会员卡支付方式ID
+    // 打印相关
+    string printer_switch = 6;          // 打印开关
+    string printer_template = 7;        // 打印模板
+    string printer_accounts = 8;        // 打印结账打印模板
+    string printer_device = 9;          // 打印驱动
 }
 
-message Item {
+message Device {
     int64 id = 1;                   // 编码
-    string plu_code = 2;            // plu码
-    int64 number = 3;               // 数量  基本单位小数点后两位数
-    string position = 4;            // 备注
-    bool handle = 5;                // 是处理
-    string no = 6;                  // 盘点序号
-    string user_id = 7;             // 盘点用户ID
-    string check_user_id = 8;       // 复盘用户ID
-    repeated Info infos = 9;
-    string created_at = 11;
-    string updated_at = 12;
+    string code = 2;                // 编码
+    int64 status = 3;               // 状态  
+    string config = 4;              // 配置
+    string info = 5;                // 设备信息 设备唯一识别标识可以是MAC地址
+    string user_id = 6;             // 设备用户ID
+    string created_at = 7;
+    string updated_at = 8;
 }
 
 message ListQuery{
@@ -47,12 +50,12 @@ message ListQuery{
 
 message Request {
     ListQuery list_query = 1;           // 列表分页请求
-    Item item = 2;            // 商品盘点信息
+    Device device = 2;            // 商品设备信息
 }
 
 message Response {
     bool valid = 1;
     int64 total = 2;// 汇总总额
-    Item item = 3;
-    repeated Item items = 4;
+    Device device = 3;
+    repeated Device devices = 4;
 }
