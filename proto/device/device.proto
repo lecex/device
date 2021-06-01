@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package device;
+
+service Devices {
+    // 获取单条盘点信息
+    rpc Get(Request) returns (Response) {}
+    // 创建或更新商品盘点信息
+    rpc Create(Request) returns (Response) {}
+    // 更新数据
+    rpc Update(Request) returns (Response) {}
+    // 删除商品盘点信息
+    rpc Delete(Request) returns (Response) {}
+    // 微服务之间调用
+}
+
+
+
+message Info {
+    int64 id = 1;                      // 编码
+    string input = 2;       // 输入内容 [26*2]
+    int64 number = 3;       // 数量  基本单位小数点后两位数
+    string position = 4;    // 位置备注
+    int64 item_id = 5;
+}
+
+message Item {
+    int64 id = 1;                   // 编码
+    string plu_code = 2;            // plu码
+    int64 number = 3;               // 数量  基本单位小数点后两位数
+    string position = 4;            // 备注
+    bool handle = 5;                // 是处理
+    string no = 6;                  // 盘点序号
+    string user_id = 7;             // 盘点用户ID
+    string check_user_id = 8;       // 复盘用户ID
+    repeated Info infos = 9;
+    string created_at = 11;
+    string updated_at = 12;
+}
+
+message ListQuery{
+    int64 limit=1;          // 返回数量
+    int64 page=2;           // 页面
+    string sort=3;          // 排序
+    string where = 4;       // 查询条件
+}
+
+message Request {
+    ListQuery list_query = 1;           // 列表分页请求
+    Item item = 2;            // 商品盘点信息
+}
+
+message Response {
+    bool valid = 1;
+    int64 total = 2;// 汇总总额
+    Item item = 3;
+    repeated Item items = 4;
+}
