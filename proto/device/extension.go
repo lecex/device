@@ -14,7 +14,7 @@ var (
 )
 
 // BeforeCreate 插入前数据处理
-func (item *Item) BeforeCreate(scope *gorm.Scope) (err error) {
+func (device *Device) BeforeCreate(scope *gorm.Scope) (err error) {
 	err = scope.SetColumn("CreatedAt", time.Now().In(local).Format(TimeLayout))
 	if err != nil {
 		return err
