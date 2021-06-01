@@ -12,10 +12,10 @@ import (
 
 //Device 仓库接口
 type Device interface {
-	Create(user *pb.Item) (*pb.Item, error)
-	Get(user *pb.Item) (*pb.Item, error)
-	Update(user *pb.Item) (*pb.Item, bool, error)
-	Delete(user *pb.Item) (bool, error)
+	Create(user *pb.Device) (*pb.Device, error)
+	Get(user *pb.Device) (*pb.Device, error)
+	Update(user *pb.Device) (*pb.Device, bool, error)
+	Delete(user *pb.Device) (bool, error)
 }
 
 // DeviceRepository 用户仓库
