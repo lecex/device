@@ -6,7 +6,8 @@ import (
 	"github.com/go-log/log"
 	"github.com/jinzhu/gorm"
 
-	pb "github.com/lecex/device/proto/inventory"
+	"github.com/lecex/core/uitl"
+	pb "github.com/lecex/device/proto/device"
 )
 
 //Device 仓库接口

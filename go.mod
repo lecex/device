@@ -3,6 +3,7 @@ module github.com/lecex/device
 go 1.13
 
 require (
+	github.com/go-log/log v0.2.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9
 	github.com/golang/protobuf v1.4.0

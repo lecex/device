@@ -8,7 +8,7 @@ import (
 	"github.com/lecex/device/handler"
 	devicePB "github.com/lecex/device/proto/device"
 	db "github.com/lecex/device/providers/database"
-	service "github.com/lecex/device/service/repository"
+	service "github.com/lecex/device/service/device"
 
 	_ "github.com/lecex/device/providers/migrations" // 执行数据迁移
 )
