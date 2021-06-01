@@ -18,7 +18,7 @@ func device() {
 				id int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
 				code varchar(64) DEFAULT NULL COMMENT '编码',
 				status int(11) DEFAULT 0 COMMENT '状态',
-				config varchar(255) DEFAULT NULL COMMENT '配置',
+				config text DEFAULT NULL COMMENT '配置',
 				info varchar(32) DEFAULT NULL COMMENT '设备信息',
 				user_id varchar(36) DEFAULT NULL COMMENT '用户ID',
 				created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

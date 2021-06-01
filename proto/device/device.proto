@@ -16,20 +16,6 @@ service Devices {
     // 微服务之间调用
 }
 
-message Config {
-    string barcode_reg = 1;             // 条形码识别规则
-    // 支付相关
-    string order_title = 2;             // 订单标题
-    string scan_store_name = 3;         // 扫码商家名称
-    string scan_pay_Id = 4;             // 扫码支付方式ID
-    string card_pay_Id = 5;             // 会员卡支付方式ID
-    // 打印相关
-    string printer_switch = 6;          // 打印开关
-    string printer_template = 7;        // 打印模板
-    string printer_accounts = 8;        // 打印结账打印模板
-    string printer_device = 9;          // 打印驱动
-}
-
 message Device {
     int64 id = 1;                   // 编码
     string code = 2;                // 编码
