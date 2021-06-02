@@ -12,10 +12,10 @@ import (
 
 //Device 仓库接口
 type Device interface {
-	Create(role *pb.Device) (*pb.Device, error)
-	Delete(role *pb.Device) (bool, error)
-	Update(role *pb.Device) (bool, error)
-	Get(role *pb.Device) (*pb.Device, error)
+	Create(req *pb.Device) (*pb.Device, error)
+	Delete(req *pb.Device) (bool, error)
+	Update(req *pb.Device) (bool, error)
+	Get(req *pb.Device) (*pb.Device, error)
 	All(req *pb.Request) ([]*pb.Device, error)
 	List(req *pb.ListQuery) ([]*pb.Device, error)
 	Total(req *pb.ListQuery) (int64, error)
@@ -26,7 +26,7 @@ type DeviceRepository struct {
 	DB *gorm.DB
 }
 
-// All 获取所有角色信息
+// All 获取所有设备信息
 func (repo *DeviceRepository) All(req *pb.Request) (devices []*pb.Device, err error) {
 	if err := repo.DB.Find(&devices).Error; err != nil {
 		log.Log(err)
@@ -35,7 +35,7 @@ func (repo *DeviceRepository) All(req *pb.Request) (devices []*pb.Device, err er
 	return devices, nil
 }
 
-// List 获取所有角色信息
+// List 获取所有设备信息
 func (repo *DeviceRepository) List(req *pb.ListQuery) (devices []*pb.Device, err error) {
 	db := repo.DB
 	limit, offset := uitl.Page(req.Limit, req.Page) // 分页
@@ -50,7 +50,7 @@ func (repo *DeviceRepository) List(req *pb.ListQuery) (devices []*pb.Device, err
 	return devices, nil
 }
 
-// Total 获取所有角色查询总量
+// Total 获取所有设备查询总量
 func (repo *DeviceRepository) Total(req *pb.ListQuery) (total int64, err error) {
 	devices := []pb.Device{}
 	db := repo.DB
@@ -65,7 +65,7 @@ func (repo *DeviceRepository) Total(req *pb.ListQuery) (total int64, err error) 
 	return total, nil
 }
 
-// Get 获取角色信息
+// Get 获取设备信息
 func (repo *DeviceRepository) Get(device *pb.Device) (*pb.Device, error) {
 	if err := repo.DB.Where(&device).Find(&device).Error; err != nil {
 		return nil, err
@@ -73,27 +73,27 @@ func (repo *DeviceRepository) Get(device *pb.Device) (*pb.Device, error) {
 	return device, nil
 }
 
-// Create 创建角色
-// bug 无角色名创建角色可能引起 bug
-func (repo *DeviceRepository) Create(r *pb.Device) (*pb.Device, error) {
-	err := repo.DB.Create(r).Error
+// Create 创建设备
+// bug 无设备名创建设备可能引起 bug
+func (repo *DeviceRepository) Create(req *pb.Device) (*pb.Device, error) {
+	err := repo.DB.Create(req).Error
 	if err != nil {
 		// 写入数据库未知失败记录
 		log.Log(err)
-		return r, fmt.Errorf("添加角色失败")
+		return req, fmt.Errorf("添加设备失败")
 	}
-	return r, nil
+	return req, nil
 }
 
-// Update 更新角色
-func (repo *DeviceRepository) Update(r *pb.Device) (bool, error) {
-	if r.Id == 0 {
+// Update 更新设备
+func (repo *DeviceRepository) Update(req *pb.Device) (bool, error) {
+	if req.Id == 0 {
 		return false, fmt.Errorf("请传入更新id")
 	}
 	id := &pb.Device{
-		Id: r.Id,
+		Id: req.Id,
 	}
-	err := repo.DB.Model(id).Updates(r).Error
+	err := repo.DB.Model(id).Updates(req).Error
 	if err != nil {
 		log.Log(err)
 		return false, err
@@ -101,9 +101,9 @@ func (repo *DeviceRepository) Update(r *pb.Device) (bool, error) {
 	return true, nil
 }
 
-// Delete 删除角色
-func (repo *DeviceRepository) Delete(r *pb.Device) (bool, error) {
-	err := repo.DB.Delete(r).Error
+// Delete 删除设备
+func (repo *DeviceRepository) Delete(req *pb.Device) (bool, error) {
+	err := repo.DB.Delete(req).Error
 	if err != nil {
 		log.Log(err)
 		return false, err

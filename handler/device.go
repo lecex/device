@@ -4,16 +4,19 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/micro/go-micro/v2"
+
 	pb "github.com/lecex/device/proto/device"
 	service "github.com/lecex/device/service/repository"
 )
 
 // Device 盘点
 type Device struct {
-	Repo service.Device
+	Repo      service.Device
+	Publisher micro.Publisher
 }
 
-// List 获取所有角色
+// List 获取所有设备
 func (srv *Device) List(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
 	devices, err := srv.Repo.List(req.ListQuery)
 	total, err := srv.Repo.Total(req.ListQuery)
@@ -25,7 +28,7 @@ func (srv *Device) List(ctx context.Context, req *pb.Request, res *pb.Response) 
 	return err
 }
 
-// Get 获取角色
+// Get 获取设备
 func (srv *Device) Get(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
 	device, err := srv.Repo.Get(req.Device)
 	if err != nil {
@@ -35,35 +38,50 @@ func (srv *Device) Get(ctx context.Context, req *pb.Request, res *pb.Response) (
 	return err
 }
 
-// Create 创建角色
+// Create 创建设备
 func (srv *Device) Create(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
 	_, err = srv.Repo.Create(req.Device)
 	if err != nil {
 		res.Valid = false
-		return fmt.Errorf("添加角色失败")
+		return fmt.Errorf("添加设备失败")
 	}
 	res.Valid = true
 	return err
 }
 
-// Update 更新角色
+// Update 更新设备
 func (srv *Device) Update(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
 	valid, err := srv.Repo.Update(req.Device)
 	if err != nil {
 		res.Valid = false
-		return fmt.Errorf("更新角色失败")
+		return fmt.Errorf("更新设备失败:%s", err.Error())
+	}
+	res.Valid = valid
+	if valid {
+		if err := srv.publish(ctx, req.Device); err != nil {
+			return err
+		}
+	}
+	return err
+}
+
+// Delete 删除设备
+func (srv *Device) Delete(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
+	valid, err := srv.Repo.Delete(req.Device)
+	if err != nil {
+		res.Valid = false
+		return fmt.Errorf("删除设备失败")
 	}
 	res.Valid = valid
 	return err
 }
 
-// Delete 删除角色
-func (srv *Device) Delete(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
-	valid, err := srv.Repo.Delete(req.Device)
+// publish 消息发布
+func (srv *Device) publish(ctx context.Context, device *pb.Device) (err error) {
+	d, err := srv.Repo.Get(device)
 	if err != nil {
-		res.Valid = false
-		return fmt.Errorf("删除角色失败")
+		return err
 	}
-	res.Valid = valid
-	return err
+	fmt.Println(d)
+	return srv.Publisher.Publish(ctx, d)
 }

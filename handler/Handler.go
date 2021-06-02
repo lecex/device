@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/micro/go-micro/v2"
 	server "github.com/micro/go-micro/v2/server"
 
 	devicePB "github.com/lecex/device/proto/device"
@@ -10,6 +11,7 @@ import (
 )
 
 // Register 注册
-func Register(Server server.Server) {
-	devicePB.RegisterDevicesHandler(Server, &Device{&service.DeviceRepository{db.DB}})
+func Register(Server server.Server, publisher micro.Publisher) {
+	// 获取 broker 实例
+	devicePB.RegisterDevicesHandler(Server, &Device{&service.DeviceRepository{db.DB}, publisher})
 }
