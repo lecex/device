@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
+	eventPB "github.com/lecex/core/proto/event"
 	"github.com/micro/go-micro/v2"
 
 	pb "github.com/lecex/device/proto/device"
@@ -82,6 +84,13 @@ func (srv *Device) publish(ctx context.Context, device *pb.Device) (err error) {
 	if err != nil {
 		return err
 	}
-	fmt.Println(d)
-	return srv.Publisher.Publish(ctx, d)
+	data, _ := json.Marshal(&d)
+	event := &eventPB.Event{
+		UserId:     "",
+		DeviceInfo: d.Info,
+		GroupId:    "",
+		Topic:      "device",
+		Data:       data,
+	}
+	return srv.Publisher.Publish(ctx, event)
 }
