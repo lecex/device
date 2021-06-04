@@ -6,7 +6,7 @@ import (
 	"github.com/go-log/log"
 	"github.com/jinzhu/gorm"
 
-	"github.com/lecex/core/uitl"
+	"github.com/lecex/core/util"
 	pb "github.com/lecex/device/proto/device"
 )
 
@@ -38,8 +38,8 @@ func (repo *DeviceRepository) All(req *pb.Request) (devices []*pb.Device, err er
 // List 获取所有设备信息
 func (repo *DeviceRepository) List(req *pb.ListQuery) (devices []*pb.Device, err error) {
 	db := repo.DB
-	limit, offset := uitl.Page(req.Limit, req.Page) // 分页
-	sort := uitl.Sort(req.Sort)                     // 排序 默认 created_at desc
+	limit, offset := util.Page(req.Limit, req.Page) // 分页
+	sort := util.Sort(req.Sort)                     // 排序 默认 created_at desc
 	if req.Where != "" {
 		db = db.Where(req.Where)
 	}
