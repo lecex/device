@@ -25,8 +25,8 @@ func main() {
 	// 注册服务
 	handler.Register(service.Server(), publisher)
 	// Run the server
+	log.Log("serviser run ... Version:" + Conf.Version)
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
 	}
-	log.Log("serviser run ...")
 }
