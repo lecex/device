@@ -1,12 +1,14 @@
 package migrations
 
 import (
+	cashierPB "github.com/lecex/device/proto/cashier"
 	devicePB "github.com/lecex/device/proto/device"
 	db "github.com/lecex/device/providers/database"
 )
 
 func init() {
 	device()
+	cashier()
 }
 
 // device 数据库结构
@@ -24,6 +26,23 @@ func device() {
 				created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (id),
+				UNIQUE KEY code (code)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		`)
+	}
+}
+
+// cashier 数据库结构
+func cashier() {
+	cashier := &cashierPB.Cashier{}
+	if !db.DB.HasTable(&cashier) {
+		db.DB.Exec(`
+			CREATE TABLE cashiers (
+				user_id varchar(36) NOT NULL,
+				code varchar(64) DEFAULT NULL,
+				password varchar(128) DEFAULT NULL,
+				name varchar(64) DEFAULT NULL,
+				PRIMARY KEY (user_id),
 				UNIQUE KEY code (code)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		`)

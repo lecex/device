@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/lecex/device/handler"
+	cashierPB "github.com/lecex/device/proto/cashier"
 	devicePB "github.com/lecex/device/proto/device"
 	db "github.com/lecex/device/providers/database"
 	service "github.com/lecex/device/service/repository"
@@ -40,7 +41,7 @@ func TestDevicesCreate(t *testing.T) {
 		},
 	}
 	res := &devicePB.Response{}
-	h := handler.Device{&service.DeviceRepository{db.DB}}
+	h := handler.Device{&service.DeviceRepository{db.DB}, nil}
 	err := h.Create(context.TODO(), req, res)
 	fmt.Println("DeviceDevice", res, err)
 	t.Log(req, res, err)
@@ -86,8 +87,24 @@ func TestDevicesGet(t *testing.T) {
 		},
 	}
 	res := &devicePB.Response{}
-	h := handler.Device{&service.DeviceRepository{db.DB}}
+	h := handler.Device{&service.DeviceRepository{db.DB}, nil}
 	err := h.Get(context.TODO(), req, res)
 	fmt.Println("DeviceDeviceGet", res, err)
+	t.Log(req, res, err)
+}
+
+func TestCashiersCreate(t *testing.T) {
+	req := &cashierPB.Request{
+		Cashier: &cashierPB.Cashier{
+			UserId: "123456",
+			// Code:     "1024",
+			// Password: "132456",
+			// Name:     "测试",
+		},
+	}
+	res := &cashierPB.Response{}
+	h := handler.Cashier{&service.CashierRepository{db.DB}}
+	err := h.List(context.TODO(), req, res)
+	fmt.Println("DeviceCashierGet", res, err)
 	t.Log(req, res, err)
 }

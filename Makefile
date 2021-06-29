@@ -17,6 +17,7 @@ micro:
 .PHONY: proto
 proto:
 	protoc -I . --micro_out=. --gogofaster_out=. proto/device/device.proto
+	protoc -I . --micro_out=. --gogofaster_out=. proto/cashier/cashier.proto
 
 .PHONY: docker
 docker:
