@@ -90,10 +90,7 @@ func (repo *DeviceRepository) Update(req *pb.Device) (bool, error) {
 	if req.Id == 0 {
 		return false, fmt.Errorf("请传入更新id")
 	}
-	id := &pb.Device{
-		Id: req.Id,
-	}
-	err := repo.DB.Model(id).Updates(req).Error
+	err := repo.DB.Where("id = ?", req.Id).Updates(req).Error
 	if err != nil {
 		log.Fatal(err)
 		return false, err
@@ -103,7 +100,10 @@ func (repo *DeviceRepository) Update(req *pb.Device) (bool, error) {
 
 // Delete 删除设备
 func (repo *DeviceRepository) Delete(req *pb.Device) (bool, error) {
-	err := repo.DB.Delete(req).Error
+	if req.UserId == "" {
+		return false, fmt.Errorf("请传入更新id")
+	}
+	err := repo.DB.Where("user_id = ?", req.UserId).Delete(req).Error
 	if err != nil {
 		log.Fatal(err)
 		return false, err

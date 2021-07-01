@@ -60,7 +60,11 @@ func (srv *Device) Update(ctx context.Context, req *pb.Request, res *pb.Response
 	}
 	res.Valid = valid
 	if valid {
-		if err := srv.publish(ctx, req.Device); err != nil {
+		device, err := srv.Repo.Get(req.Device)
+		if err != nil {
+			return err
+		}
+		if err := srv.publish(ctx, device, "device.Devices.Update"); err != nil {
 			return err
 		}
 	}
@@ -79,17 +83,13 @@ func (srv *Device) Delete(ctx context.Context, req *pb.Request, res *pb.Response
 }
 
 // publish 消息发布
-func (srv *Device) publish(ctx context.Context, device *pb.Device) (err error) {
-	d, err := srv.Repo.Get(device)
-	if err != nil {
-		return err
-	}
-	data, _ := json.Marshal(&d)
+func (srv *Device) publish(ctx context.Context, device *pb.Device, topic string) (err error) {
+	data, _ := json.Marshal(&device)
 	event := &eventPB.Event{
 		UserId:     "",
-		DeviceInfo: d.Info,
+		DeviceInfo: device.Info,
 		GroupId:    "",
-		Topic:      "device",
+		Topic:      topic,
 		Data:       data,
 	}
 	return srv.Publisher.Publish(ctx, event)

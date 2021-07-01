@@ -91,10 +91,7 @@ func (repo *CashierRepository) Update(p *pb.Cashier) (bool, error) {
 	if p.UserId == "" {
 		return false, fmt.Errorf("请传入更新id")
 	}
-	id := &pb.Cashier{
-		UserId: p.UserId,
-	}
-	err := repo.DB.Model(id).Where("user_id = ?", p.UserId).Updates(p).Error
+	err := repo.DB.Where("user_id = ?", p.UserId).Updates(p).Error
 	if err != nil {
 		log.Log(err)
 		return false, err
@@ -104,7 +101,10 @@ func (repo *CashierRepository) Update(p *pb.Cashier) (bool, error) {
 
 // Delete 删除收银员
 func (repo *CashierRepository) Delete(p *pb.Cashier) (bool, error) {
-	err := repo.DB.Delete(p).Error
+	if p.UserId == "" {
+		return false, fmt.Errorf("请传入更新id")
+	}
+	err := repo.DB.Where("user_id = ?", p.UserId).Delete(p).Error
 	if err != nil {
 		log.Log(err)
 		return false, err

@@ -12,8 +12,6 @@ import (
 	_ "github.com/lecex/device/providers/migrations" // 执行数据迁移
 )
 
-const topic = "websocket"
-
 func main() {
 	var Conf = config.Conf
 	service := micro.NewService(
@@ -21,9 +19,8 @@ func main() {
 		micro.Version(Conf.Version),
 	)
 	service.Init()
-	publisher := micro.NewPublisher(topic, service.Client())
 	// 注册服务
-	handler.Register(service.Server(), publisher)
+	handler.Register(service)
 	// Run the server
 	log.Fatal("serviser run ... Version:" + Conf.Version)
 	if err := service.Run(); err != nil {
