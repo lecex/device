@@ -38,12 +38,12 @@ func cashier() {
 	if !db.DB.HasTable(&cashier) {
 		db.DB.Exec(`
 			CREATE TABLE cashiers (
-				user_id varchar(36) NOT NULL,
-				code varchar(64) DEFAULT NULL,
-				password varchar(128) DEFAULT NULL,
+				code varchar(64) NOT NULL,
 				name varchar(64) DEFAULT NULL,
-				PRIMARY KEY (user_id),
-				UNIQUE KEY code (code)
+				password varchar(128) DEFAULT NULL,
+				user_id varchar(36) DEFAULT NULL,
+				PRIMARY KEY (code),
+				UNIQUE KEY user_id (user_id)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		`)
 	}

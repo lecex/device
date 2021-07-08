@@ -14,6 +14,12 @@ type Cashier struct {
 	Repo repository.Cashier
 }
 
+// Exist 用户是否存在
+func (srv *Cashier) Exist(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
+	res.Valid = srv.Repo.Exist(req.Cashier)
+	return err
+}
+
 // All 获取所有收银员
 func (srv *Cashier) All(ctx context.Context, req *pb.Request, res *pb.Response) (err error) {
 	cashiers, err := srv.Repo.All(req)

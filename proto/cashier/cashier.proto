@@ -3,6 +3,8 @@ syntax = "proto3";
 package cashier;
 
 service Cashiers {
+    // 用过 code 查询收银员是否存在
+    rpc Exist(Request) returns (Response) {}
     // 获取所有收银员信息
     rpc All(Request) returns (Response) {}
     // 获取设备列表
@@ -19,10 +21,10 @@ service Cashiers {
 }
 
 message Cashier {
-    string user_id = 1;             // 用户ID
-    string code = 2;                // 收银员编码
-    string password = 3;            // 离线登录密码  
-    string name = 4;                // 收银员名字
+    string code = 1;                // 收银员编码
+    string password = 2;            // 离线登录密码  
+    string name = 3;                // 收银员名字
+    string user_id = 4;             // 用户ID
 }
 
 message ListQuery{

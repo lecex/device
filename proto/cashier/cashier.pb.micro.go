@@ -34,6 +34,8 @@ var _ server.Option
 // Client API for Cashiers service
 
 type CashiersService interface {
+	// 用过 code 查询收银员是否存在
+	Exist(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	// 获取所有收银员信息
 	All(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	// 获取设备列表
@@ -58,6 +60,16 @@ func NewCashiersService(name string, c client.Client) CashiersService {
 		c:    c,
 		name: name,
 	}
+}
+
+func (c *cashiersService) Exist(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.name, "Cashiers.Exist", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *cashiersService) All(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
@@ -123,6 +135,8 @@ func (c *cashiersService) Delete(ctx context.Context, in *Request, opts ...clien
 // Server API for Cashiers service
 
 type CashiersHandler interface {
+	// 用过 code 查询收银员是否存在
+	Exist(context.Context, *Request, *Response) error
 	// 获取所有收银员信息
 	All(context.Context, *Request, *Response) error
 	// 获取设备列表
@@ -139,6 +153,7 @@ type CashiersHandler interface {
 
 func RegisterCashiersHandler(s server.Server, hdlr CashiersHandler, opts ...server.HandlerOption) error {
 	type cashiers interface {
+		Exist(ctx context.Context, in *Request, out *Response) error
 		All(ctx context.Context, in *Request, out *Response) error
 		List(ctx context.Context, in *Request, out *Response) error
 		Get(ctx context.Context, in *Request, out *Response) error
@@ -155,6 +170,10 @@ func RegisterCashiersHandler(s server.Server, hdlr CashiersHandler, opts ...serv
 
 type cashiersHandler struct {
 	CashiersHandler
+}
+
+func (h *cashiersHandler) Exist(ctx context.Context, in *Request, out *Response) error {
+	return h.CashiersHandler.Exist(ctx, in, out)
 }
 
 func (h *cashiersHandler) All(ctx context.Context, in *Request, out *Response) error {

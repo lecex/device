@@ -12,6 +12,7 @@ import (
 
 //Cashier 仓库接口
 type Cashier interface {
+	Exist(cashier *pb.Cashier) bool
 	Create(cashier *pb.Cashier) (*pb.Cashier, error)
 	Delete(cashier *pb.Cashier) (bool, error)
 	Update(cashier *pb.Cashier) (bool, error)
@@ -24,6 +25,16 @@ type Cashier interface {
 // CashierRepository 收银员仓库
 type CashierRepository struct {
 	DB *gorm.DB
+}
+
+// Exist 检测用户是否已经存在
+func (repo *CashierRepository) Exist(cashier *pb.Cashier) bool {
+	var count int
+	repo.DB.Model(&cashier).Where("code = ?", cashier.Code).Count(&count)
+	if count > 0 {
+		return true
+	}
+	return false
 }
 
 // All 获取所有角色信息

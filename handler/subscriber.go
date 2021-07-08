@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/micro/go-micro/v2/util/log"
 
@@ -20,7 +19,6 @@ type Subscriber struct {
 
 // Process 事件处理
 func (sub *Subscriber) Process(ctx context.Context, event *pb.Event) (err error) {
-	fmt.Println(event)
 	switch event.Topic {
 	case "user.Users.Delete":
 		sub.delete(ctx, event.Data)
